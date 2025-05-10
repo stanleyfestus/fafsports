@@ -1,0 +1,22 @@
+{
+  "name": "faf-sports",
+  "build": {
+    "context": "..",
+    "dockerfile": "Dockerfile"
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash"
+      }
+    }
+  },
+"forwardPorts": [8080, 5173],
+"postCreateCommand": "cd backend && mvn clean install",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "18"
+    }
+  }
+}
+
