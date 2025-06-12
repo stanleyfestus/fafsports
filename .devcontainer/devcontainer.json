@@ -1,22 +1,17 @@
 {
-  "name": "faf-sports",
-  "build": {
-    "context": "..",
-    "dockerfile": "Dockerfile"
-  },
+  "name": "Java Spring Boot Dev Container",
+  "image": "mcr.microsoft.com/devcontainers/java:17",
+    "remoteUser": "root",
   "customizations": {
-    "vscode": {
-      "settings": {
-        "terminal.integrated.defaultProfile.linux": "bash"
-      }
-    }
   },
-"forwardPorts": [8080, 5173],
-"postCreateCommand": "cd backend && mvn clean install",
+  "forwardPorts": [8080],
+  //"postCreateCommand": "mvn clean install",
   "features": {
-    "ghcr.io/devcontainers/features/node:1": {
-      "version": "18"
-    }
+  "ghcr.io/devcontainers/features/aws-cli:1": {},
+  "ghcr.io/devcontainers/features/node:1": {
+    "version": "18"
   }
 }
-
+,
+  "postCreateCommand": "apt-get update && apt-get install -y maven && chmod +x .devcontainer/aws-configure.sh"
+}
