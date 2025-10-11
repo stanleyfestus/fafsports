@@ -10,24 +10,27 @@ import {
   Alert,
   AlertIcon,
 } from '@chakra-ui/react'
+import { useSelector, useDispatch } from 'react-redux'
+import { RootState } from '../../../store/store'
+import { setEmail, setPassword } from './loginSlice'
 
 interface LoginProps {
   onLogin: (email: string, password: string, isAdmin: boolean) => void
 }
 
 const Login: React.FC<LoginProps> = ({ onLogin }) => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  const email = useSelector((state: RootState) => state.loginForm?.email || '');
+  const password = useSelector((state: RootState) => state.loginForm?.password || '');
+  const dispatch = useDispatch();
 
   const handleSubmit = () => {
     if (!email || !password) {
       setError('Please enter both email and password.')
       return
     }
-
     setError('')
-    onLogin(email, password, false) // Assuming isAdmin is false for regular users
+    onLogin(email, password, false)
   }
 
   return (
@@ -41,7 +44,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
           <Input
             type="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => dispatch(setEmail(e.target.value))}
             placeholder="Enter your email"
           />
         </FormControl>
@@ -51,7 +54,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
           <Input
             type="password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => dispatch(setPassword(e.target.value))}
             placeholder="Enter your password"
           />
         </FormControl>

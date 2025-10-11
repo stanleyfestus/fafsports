@@ -1,39 +1,61 @@
 import { useState } from 'react'
 import { Container } from '@chakra-ui/react'
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom'
+import { useSelector, useDispatch } from "react-redux";
 import UserComponent from './components/UserComponent/UserComponent'
 import Login from './components/Login/Login'
 import Admin from './components/Admin/Admin'
-import { users } from '../data/profiles'
+import { useMutation } from '@tanstack/react-query';
 import Layout from './components/Layout/Layout'
-import { User } from './types'
+import { RootState } from '../store/store'
+import { setEmail, setPassword } from './components/Login/loginSlice';
+import { resetUser } from './components/UserComponent/userSlice';
+
 
 function App() {
-  const [user, setUser] = useState<User| null>(null)
-  const [adminUser, setAdminUser] = useState<User[]>([])
   const navigate = useNavigate()
+  const dispatch = useDispatch();
+  const [data, setData] = useState<null | {email: string, token: string, id: string}>(null);
+  const localUser = useSelector((state: RootState) => state.localUser.user);
+
+  const loginMutation = useMutation({
+  mutationFn: async ({ email, password }: { email: string; password: string }) => {
+    const response = await fetch('http://localhost:8080/api/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
+    });
+
+    if (!response.ok) throw new Error('No user found');
+    return response.json();
+  }
+  })
 
   const handleLogin = (email: string, password: string) => {
-    const foundUser = users.find(
-      (u) => u.email === email.trim() && u.password === password.trim()
-    )
 
-    if (foundUser) {
-      setUser(foundUser as User)
-      if (foundUser.isAdmin) {
-        setAdminUser(users as User[])
-        navigate('/admin')
-      } else {
-        setUser(foundUser as User)
-        navigate('/user')
-      }
-    } else {
-      alert('Invalid email or password')
-    }
+    loginMutation.mutate({ email, password }, {
+      onSuccess: (data) => {
+        setData(data);
+        if (data.id.startsWith('admin')) {
+          navigate('/admin');
+        } else {
+          navigate('/user');
+        }
+      },
+      onError: () => {
+        alert('Invalid email or password');
+      },
+    });
+
   }
 
   const handleLogout = () => {
-    setUser(null)
+    dispatch(setEmail(''))
+    dispatch(setPassword(''))
+    setData(null)
+    dispatch(resetUser())
     navigate('/login')
   }
   return (
@@ -41,7 +63,7 @@ function App() {
         <Routes>
           <Route
             path="/"
-            element={!user &&  <Navigate to="/login" />}
+            element={!data &&  <Navigate to="/login" />}
           />
           <Route
             path="/login"
@@ -53,19 +75,19 @@ function App() {
           />
           <Route
             path="/"
-            element={<Layout user={user} logOut={handleLogout}/>}
+            element={<Layout user={localUser} logOut={handleLogout}/>}
           >
             <Route
               path="user"
               element={
-                user ? <UserComponent user={user} /> : <Navigate to="/login" />
+                data ? <UserComponent data={data} user={localUser}/> : <Navigate to="/login" />
               }
             />
             <Route
               path="admin"
               element={
-                user && user.isAdmin ? (
-                  <Admin users={adminUser} />
+                data && data.id.startsWith('admin') ? (
+                  <Admin data={data} />
                 ) : (
                   <Navigate to="/login" />
                 )
