@@ -9,13 +9,25 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import backend.example.backend.data.MockPlayersProfile;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 @RestController
 @RequestMapping("/api/player")
 public class PlayersController {
 
+    private boolean isAuthorized(String token, String id) {
+        return token != null && !token.isEmpty() && MockPlayersProfile.players.stream()
+        .anyMatch(profile -> id.equals(profile.get("id")));
+   }
+
    @GetMapping({"", "/"})
-    public String getPlayerInfo() {
+    public String getPlayerInfo(
+        @PathVariable String id,
+        @RequestHeader(value = "token", required = false) String token
+    ) {
+         if (!isAuthorized(token, id)) {
+            return "Unauthorized";
+        }
         return "Player info for me";
         
     }
@@ -27,7 +39,12 @@ public class PlayersController {
     }
 
     @GetMapping("/{id}")
-    public Object getPlayerById(@PathVariable String id) {
+    public Object getPlayerById(@PathVariable String id,
+        @RequestHeader(value = "token", required = false) String token
+) {
+        if (!isAuthorized(token, id)) {
+            return "Unauthorized";
+        }
         return MockPlayersProfile.players.stream()
             .filter(profile -> id.equals(profile.get("id")))
             .findFirst()

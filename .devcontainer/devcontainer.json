@@ -1,6 +1,6 @@
 {
   "name": "Java Spring Boot Dev Container",
-  "image": "mcr.microsoft.com/devcontainers/java:17",
+  "image": "mcr.microsoft.com/devcontainers/java:21",
     "remoteUser": "root",
   "customizations": {
   },
