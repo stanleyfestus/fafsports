@@ -48,7 +48,7 @@ const UserComponent: React.FC<UserComponentProps> = ({ data }) => {
   return (
     <Box p={4}>
       {localUser ? (
-        <Flex direction="column" p={4} borderWidth="1px" borderRadius="md" boxShadow="sm" gap={4}>
+    <Flex direction="column" p={4} borderWidth="1px" borderRadius="md" boxShadow="sm" gap={4}>
            <Flex align="center" gap={4}>
         <Avatar name={localUser.name} src={localUser.avatarUrl || 'https://via.placeholder.com/150'} size="lg" />
         <Box>

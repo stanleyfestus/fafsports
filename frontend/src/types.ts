@@ -5,6 +5,9 @@ export interface User {
   email: string
   phone: string
   nationality: string
+  dateOfBirth: string 
+  height: number
+  weight: number
   position: string[]
   preferredFoot: string
   currentClub: {

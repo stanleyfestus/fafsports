@@ -6,10 +6,10 @@ public class MockUsers {
     public static final List<Map<String, Object>> users = List.of(
         Map.ofEntries(
             Map.entry("id", "admin_001"),
-            Map.entry("email", "admin@example.com"),
+            Map.entry("email", "info@vlieservice.nl"),
             Map.entry("password", "adminpass"),
             Map.entry("createdAt", "2022-01-01T00:00:00Z"),
-            Map.entry("role", "ADMIN")
+            Map.entry("role", "admin")
         ),
         Map.ofEntries(
             Map.entry("id", "user_001"),

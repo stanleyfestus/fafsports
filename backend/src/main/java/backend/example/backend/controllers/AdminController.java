@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.RequestHeader;
 public class AdminController {
 
     @GetMapping({"", "/"})
-    public String getPlayerInfo(
-        @RequestHeader(value = "token", required = true) String token,
+    public Object getPlayerInfo(
+        @RequestHeader(value = "Authorization", required = true) String token,
         @RequestHeader(value = "role", required = true) String role
     ) {
         if (token == null || token.isEmpty() || !role.equals("admin")) {
             return "Unauthorized";
         }
-        return MockPlayersProfile.players.toString();
+        return MockPlayersProfile.players;
     }
 }

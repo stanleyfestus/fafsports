@@ -19,6 +19,7 @@ public class AuthController {
    public ResponseEntity<Map<String, Object>> login(@RequestBody Map<String, String> credentials) {
     String email = credentials.get("email");
     String password = credentials.get("password");
+    Map<String, Object> response = new HashMap<>();
 
     Optional<Map<String, Object>> userOpt = MockUsers.users.stream()
     .filter(u -> Objects.equals(u.get("email"), email) && Objects.equals(u.get("password"), password))
@@ -26,13 +27,12 @@ public class AuthController {
     
     if(userOpt.isPresent()) {
       Map<String, Object> user = new HashMap<>(userOpt.get());
-      Map<String, Object> response = new HashMap<>();
+      
       response.put("token", "eyJhbGciOiJIUzI1NiIs"); // Example token
       response.put("email", user.get("email"));
       response.put("id", user.get("id"));
       return ResponseEntity.ok(response);
     } else if(credentials.get("email").equals("info@vlieservice.nl")) {
-       Map<String, Object> response = new HashMap<>();
        response.put("token", "eyJhbGciOiJIUzI1NiIs"); // Example token
        response.put("role", "admin");
        return ResponseEntity.ok(response);
