@@ -1,0 +1,28 @@
+{
+  "name": "Java Spring Boot Dev Container",
+  "image": "mcr.microsoft.com/devcontainers/java:21",
+    "remoteUser": "root",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint"
+      ],
+      "settings": {
+        "eslint.enable": true,
+        "editor.codeActionsOnSave": {
+          "source.fixAll.eslint": "always"
+        }
+      }
+    }
+  },
+  "forwardPorts": [3000, 8080],
+  //"postCreateCommand": "mvn clean install",
+  "features": {
+    "ghcr.io/devcontainers/features/aws-cli:1": {},
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "20"
+    }
+  },
+  "mounts": ["source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"],
+  "postCreateCommand": "apt-get update && apt-get install -y docker.io maven && chmod +x .devcontainer/aws-configure.sh"
+}
